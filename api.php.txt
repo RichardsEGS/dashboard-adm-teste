@@ -1,0 +1,33 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *'); // Permite CORS para Next.js
+
+// Dados simulados (substitua por banco de dados)
+$produtos = [
+    ['id' => 1, 'nome' => 'Sabonete Natural', 'estoque' => 50, 'preco' => 15.00],
+    ['id' => 2, 'nome' => 'Esfoliante Orgânico', 'estoque' => 30, 'preco' => 20.00]
+];
+
+$vendas = [
+    ['id' => 1, 'produto_id' => 1, 'quantidade' => 10, 'total' => 150.00],
+    ['id' => 2, 'produto_id' => 2, 'quantidade' => 5, 'total' => 100.00]
+];
+
+// Endpoints
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['endpoint'])) {
+        if ($_GET['endpoint'] === 'produtos') {
+            echo json_encode($produtos);
+        } elseif ($_GET['endpoint'] === 'vendas') {
+            echo json_encode($vendas);
+        } elseif ($_GET['endpoint'] === 'lucro') {
+            $entradas = array_sum(array_column($vendas, 'total'));
+            $saidas = $entradas * 0.3; // Estimativa
+            echo json_encode(['entradas' => $entradas, 'saidas' => $saidas, 'lucro' => $entradas - $saidas]);
+        }
+    }
+}
+?>
+
+(Crie um arquivo api.phpna pasta do PHP (ex.: htdocs/dashboard-api/api.php). Ele simula dados (use um array; para real, conecte um MySQL).)
+Como Rodar : Execute php -S localhost:8000 api.phpe acesse http://localhost:8000?endpoint=produtos.

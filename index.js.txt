@@ -1,0 +1,45 @@
+import { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import styles from '../styles/Home.module.scss';
+
+export default function Home() {
+  const [produtos, setProdutos] = useState([]);
+  const [vendas, setVendas] = useState([]);
+  const [lucro, setLucro] = useState({});
+
+  useEffect(() => {
+    fetch('http://localhost:8000?endpoint=produtos').then(res => res.json()).then(setProdutos);
+    fetch('http://localhost:8000?endpoint=vendas').then(res => res.json()).then(setVendas);
+    fetch('http://localhost:8000?endpoint=lucro').then(res => res.json()).then(setLucro);
+  }, []);
+
+  const chartData = {
+    labels: vendas.map(v => `Venda ${v.id}`),
+    datasets: [{ label: 'Total (R$)', data: vendas.map(v => v.total), backgroundColor: '#8B4513' }]
+  };
+
+  return (
+    <div className={styles.container}>
+      <h1>Dashboard Empresarial</h1>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <h2>Produtos</h2>
+          <ul>{produtos.map(p => <li key={p.id}>{p.nome} - Estoque: {p.estoque}</li>)}</ul>
+        </div>
+        <div className={styles.card}>
+          <h2>Vendas</h2>
+          <Bar data={chartData} />
+        </div>
+        <div className={styles.card}>
+          <h2>Lucro</h2>
+          <p>Entradas: R$ {lucro.entradas}</p>
+          <p>Saídas: R$ {lucro.saidas}</p>
+          <p>Lucro: R$ {lucro.lucro}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+Crie um projeto Next.js ( npx create-next-app dashboard). Instale chart.jse react-chartjs-2para gráficos ( npm install chart.js react-chartjs-2).
